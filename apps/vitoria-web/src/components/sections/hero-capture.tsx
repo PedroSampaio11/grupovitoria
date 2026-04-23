@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
-import { ArrowRight, MapPin, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
+import { ArrowRight, MapPin, ShieldCheck, Loader2 } from 'lucide-react';
 import { siteConfig } from '@/constants/site';
+
+const KEYWORDS = ["COM EXCELÊNCIA.", "COM SEGURANÇA.", "COM PARCERIA."];
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -27,10 +29,213 @@ function buildWhatsAppUrl(origem: string, destino: string, veiculo: string) {
   return `https://wa.me/${phone}?text=${msg}`;
 }
 
+const BRAZIL_CITIES = [
+  "São Paulo, SP", "Rio de Janeiro, RJ", "Belo Horizonte, MG", "Curitiba, PR", "Porto Alegre, RS",
+  "Salvador, BA", "Fortaleza, CE", "Brasília, DF", "Goiânia, GO", "Manaus, AM", "Recife, PE",
+  "Belém, PA", "Vitória, ES", "Florianópolis, SC", "Cuiabá, MT", "Campo Grande, MS",
+  "Natal, RN", "João Pessoa, PB", "Maceió, AL", "Teresina, PI", "Aracaju, SE",
+  "São Luís, MA", "Porto Velho, RO", "Macapá, AP", "Rio Branco, AC", "Boa Vista, RR",
+  "Palmas, TO", "Campinas, SP", "Guarulhos, SP", "São Bernardo do Campo, SP", "Ribeirão Preto, SP"
+];
+
+// ── CEP Lookup via ViaCEP (API pública brasileira) ──
+async function lookupCEP(cep: string): Promise<{ city: string; state: string } | null> {
+  const clean = cep.replace(/\D/g, '');
+  if (clean.length !== 8) return null;
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.erro) return null;
+    return { city: data.localidade, state: data.uf };
+  } catch {
+    return null;
+  }
+}
+
+// ── Smart Input Component ──
+function SmartLocationInput({
+  value,
+  onChange,
+  placeholder,
+  isGeoDetected,
+  id,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  placeholder: string;
+  isGeoDetected?: boolean;
+  id: string;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [wasResolved, setWasResolved] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const formatCEP = (val: string) => {
+    const clean = val.replace(/\D/g, '').slice(0, 8);
+    if (clean.length > 5) {
+      return `${clean.slice(0, 5)}-${clean.slice(5)}`;
+    }
+    return clean;
+  };
+
+  const handleChange = async (inputVal: string) => {
+    // Sugestões de cidades
+    if (inputVal.length >= 3 && !/^\d+$/.test(inputVal)) {
+      const filtered = BRAZIL_CITIES.filter(c => 
+        c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .includes(inputVal.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+      );
+      setSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0);
+    } else {
+      setShowSuggestions(false);
+    }
+
+    if (inputVal.length < value.length) {
+      onChange(inputVal);
+      setWasResolved(false);
+      return;
+    }
+
+    const formatted = inputVal.includes('-') || /^\d+$/.test(inputVal) ? formatCEP(inputVal) : inputVal;
+    onChange(formatted);
+    setWasResolved(false);
+
+    const cleanCEP = formatted.replace(/\D/g, '');
+    if (cleanCEP.length === 8) {
+      setIsLoading(true);
+      const result = await lookupCEP(cleanCEP);
+      if (result) {
+        onChange(`${result.city}, ${result.state}`);
+        setWasResolved(true);
+      }
+      setIsLoading(false);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSelect = (city: string) => {
+    onChange(city);
+    setShowSuggestions(false);
+    setWasResolved(true);
+  };
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+      <input
+        id={id}
+        type="text"
+        autoComplete="off"
+        required
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="w-full h-12 md:h-14 pl-12 pr-24 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none transition-all text-sm"
+      />
+      
+      {showSuggestions && (
+        <motion.div 
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-white/10 rounded-xl overflow-hidden z-[100] shadow-2xl"
+        >
+          {suggestions.map((city) => (
+            <button
+              key={city}
+              type="button"
+              onClick={() => handleSelect(city)}
+              className="w-full px-6 py-3 text-left text-sm text-white/70 hover:bg-[#EC223D] hover:text-white transition-colors border-b border-white/5 last:border-0"
+            >
+              {city}
+            </button>
+          ))}
+        </motion.div>
+      )}
+
+      {isLoading && (
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <Loader2 className="w-4 h-4 text-[#EC223D] animate-spin" />
+        </div>
+      )}
+      {(isGeoDetected || wasResolved) && !isLoading && !showSuggestions && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-400 hidden xs:block">
+            {isGeoDetected ? 'Auto-IP' : 'OK'}
+          </span>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 export function HeroCapture() {
   const [origem, setOrigem] = useState("");
   const [destino, setDestino] = useState("");
   const [veiculo, setVeiculo] = useState("");
+  const [isGeoDetected, setIsGeoDetected] = useState(false);
+  const [currentWord, setCurrentWord] = useState(0);
+
+  useEffect(() => {
+    const wordInterval = setInterval(() => {
+      setCurrentWord((prev) => (prev + 1) % KEYWORDS.length);
+    }, 3000);
+    return () => clearInterval(wordInterval);
+  }, []);
+
+  useEffect(() => {
+    async function fetchGeo() {
+      try {
+        const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.city && data.region) {
+            setOrigem(`${data.city}, ${data.region}`);
+            setIsGeoDetected(true);
+            return;
+          }
+        }
+      } catch {
+        /* silent */
+      }
+      try {
+        const resFallback = await fetch("https://ipapi.co/json/");
+        if (resFallback.ok) {
+          const data = await resFallback.json();
+          if (data.city && data.region) {
+            setOrigem(`${data.city}, ${data.region}`);
+            setIsGeoDetected(true);
+          }
+        }
+      } catch {
+        /* silent */
+      }
+    }
+    fetchGeo();
+  }, []);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,15 +244,20 @@ export function HeroCapture() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-white">
+    <section
+      id="hero"
+      aria-label="Formulário de cotação de transporte"
+      className="relative min-h-screen flex items-center pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-white"
+    >
       <div
         className="absolute inset-0 z-0 opacity-[0.03]"
+        aria-hidden="true"
         style={{
           backgroundImage: 'radial-gradient(circle at 1.5px 1.5px, #0B1727 1px, transparent 0)',
           backgroundSize: '48px 48px'
         }}
       />
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#EC223D] z-10" />
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#EC223D] z-10" aria-hidden="true" />
 
       <motion.div
         variants={containerVariants}
@@ -67,8 +277,21 @@ export function HeroCapture() {
             variants={itemVariants}
             className="text-[clamp(32px,7vw,84px)] font-bold tracking-normal text-slate-950 leading-[1.1] md:leading-[1.05]"
           >
-            SEGURANÇA<br />
-            <span className="text-[#EC223D]">PATRIMONIAL.</span>
+            TRANSPORTE<br />
+            <span className="text-[#EC223D] inline-block min-w-[300px]">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentWord}
+                  initial={{ y: 20, opacity: 0, filter: "blur(4px)" }}
+                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ y: -20, opacity: 0, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="inline-block"
+                >
+                  {KEYWORDS[currentWord]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
           </motion.h1>
 
           <motion.p
@@ -84,12 +307,12 @@ export function HeroCapture() {
               <div className="text-2xl md:text-3xl font-bold text-slate-950">100%</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Segurança</div>
             </div>
-            <div className="w-px bg-slate-200" />
+            <div className="w-px bg-slate-200" aria-hidden="true" />
             <div className="flex flex-col">
               <div className="text-2xl md:text-3xl font-bold text-slate-950">Zero</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Avarias</div>
             </div>
-            <div className="w-px bg-slate-200" />
+            <div className="w-px bg-slate-200" aria-hidden="true" />
             <div className="flex flex-col">
               <div className="text-2xl md:text-3xl font-bold text-slate-950">Elite</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Operacional</div>
@@ -104,47 +327,43 @@ export function HeroCapture() {
           transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-md mx-auto lg:ml-auto"
         >
-          <form onSubmit={handleSubmit} className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+          <form onSubmit={handleSubmit} className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-white/5" aria-label="Formulário de cotação">
             <div className="px-8 py-8 md:px-10 border-b border-white/10">
               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#EC223D] mb-2">
                 Solicitação de Cotação
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+              <h3 className="text-xl md:text-2xl font-bold !text-white tracking-tight">
                 Planejamento de Rota
               </h3>
             </div>
 
             <div className="px-8 py-8 md:px-10 space-y-4">
-              <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  required
-                  value={origem}
-                  onChange={(e) => setOrigem(e.target.value)}
-                  placeholder="Origem (Cidade ou CEP)"
-                  className="w-full h-12 md:h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none transition-all text-sm"
-                />
-              </div>
+              <SmartLocationInput
+                id="campo-origem"
+                value={origem}
+                onChange={(val) => {
+                  setOrigem(val);
+                  if (isGeoDetected) setIsGeoDetected(false);
+                }}
+                placeholder="Origem (Cidade ou CEP)"
+                isGeoDetected={isGeoDetected}
+              />
 
-              <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  required
-                  value={destino}
-                  onChange={(e) => setDestino(e.target.value)}
-                  placeholder="Destino (Cidade ou CEP)"
-                  className="w-full h-12 md:h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none transition-all text-sm"
-                />
-              </div>
+              <SmartLocationInput
+                id="campo-destino"
+                value={destino}
+                onChange={setDestino}
+                placeholder="Destino (Cidade ou CEP)"
+              />
 
               <div className="relative">
                 <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <select
+                  id="campo-veiculo"
                   required
                   value={veiculo}
                   onChange={(e) => setVeiculo(e.target.value)}
+                  aria-label="Categoria do Veículo"
                   className="w-full h-12 md:h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none appearance-none transition-all cursor-pointer text-sm"
                 >
                   <option value="" className="bg-slate-950">Categoria do Veículo</option>

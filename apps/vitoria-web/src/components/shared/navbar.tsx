@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -52,12 +53,13 @@ export function Navbar() {
       >
         <div className="w-full max-w-7xl mx-auto px-6 py-4 md:py-5 flex items-center justify-between overflow-hidden">
           <div className="flex flex-col shrink-0">
-            <div className={cn("text-lg md:text-xl font-bold tracking-normal uppercase leading-none", isScrolled ? "text-white" : "text-slate-950")}>
-              VITÓRIA
-            </div>
-            <div className={cn("text-[9px] md:text-[10px] font-medium tracking-[0.2em] uppercase mt-1", isScrolled ? "text-white/40" : "text-slate-500")}>
-              TRANSPORTES
-            </div>
+            <Image 
+              src={isScrolled ? "/logos/logo-light.png" : "/logos/logo-dark.png"}
+              alt="Vitória Transportes"
+              width={200}
+              height={200}
+              className="h-16 w-auto md:h-20 object-contain transition-all duration-300"
+            />
           </div>
 
           <div className="hidden lg:flex items-center gap-10">

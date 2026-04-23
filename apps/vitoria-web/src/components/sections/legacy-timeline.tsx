@@ -1,139 +1,226 @@
 "use client";
 
-import React from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import React, { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 
+// ── Dados da Timeline ──────────────────────────────────────────────────────
 const TIMELINE = [
   {
-    year: "2012",
-    title: "Fundação & Pilares",
-    description: "Início das operações focadas no transporte de veículos pesados. O compromisso com a integridade patrimonial é estabelecido como norma fundamental.",
+    year: "1992",
+    index: "01",
+    pretitle: "A Gênese da Vitória",
+    title: "Fundação e Tradição",
+    description:
+      "Nascemos com um propósito claro: redefinir a integridade no transporte. Desde o primeiro quilômetro, a segurança patrimonial tornou-se nossa assinatura irrevogável.",
+    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    year: "2005",
+    index: "02",
+    pretitle: "Expansão de Horizontes",
+    title: "Consolidação Nacional",
+    description:
+      "A Vitória rompe fronteiras. Ampliamos nossa malha logística para conectar grandes indústrias aos quatro cantos do Brasil, mantendo o padrão de elite em cada entrega.",
+    image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=2075&auto=format&fit=crop",
   },
   {
     year: "2015",
-    title: "Consolidação de Rotas",
-    description: "Expansão da capacidade logística para atender montadoras e revendedoras no eixo Sul-Sudeste, com foco em segurança absoluta na estrada.",
+    index: "03",
+    pretitle: "Inovação Especializada",
+    title: "Liderança em Frotas",
+    description:
+      "Verticalizamos nossa expertise para veículos transformados. Ambulâncias e viaturas de alta complexidade passam a contar com protocolos exclusivos de segurança Vitória.",
+    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
   },
   {
-    year: "2019",
-    title: "Especialização em Vans",
-    description: "Inauguração da vertical dedicada a Vans e Ambulâncias. Desenvolvimento de protocolos específicos de fixação para veículos transformados.",
-  },
-  {
-    year: "2022",
+    year: "2020",
+    index: "04",
+    pretitle: "O Padrão Ouro",
     title: "Excelência Operacional",
-    description: "Refinamento do protocolo de vistoria de 47 pontos e consolidação da malha nacional atendendo todos os 27 estados com rigor corporativo.",
+    description:
+      "Implementamos vistorias de 47 pontos e inteligência logística avançada. Nossa performance atinge o ápice, garantindo 100% de proteção ao patrimônio corporativo.",
+    image: "https://images.unsplash.com/photo-1586864387789-628af9feed72?q=80&w=2070&auto=format&fit=crop",
   },
   {
     year: "Hoje",
-    title: "Referência B2B",
-    description: "Liderança técnica no transporte de frotas especiais. Patrimônio protegido por uma estrutura de segurança robusta e processos certificados.",
+    index: "05",
+    pretitle: "Visão de Futuro",
+    title: "Referência B2B Absoluta",
+    description:
+      "Três décadas de liderança técnica. Hoje, a Vitória Transportes é o braço direito do mercado corporativo, operando com estrutura de elite e processos certificados.",
+    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
   },
 ];
 
-interface TimelineItemProps {
-  item: typeof TIMELINE[0];
-  index: number;
-  isLast: boolean;
-}
+const SPRING_CONFIG = { stiffness: 45, damping: 25, mass: 1 };
 
-function TimelineItem({ item, index, isLast }: TimelineItemProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+// ── Painel de Parallax Refinado ───────────────────────────────────────────
+function ParallaxPanel({
+  item,
+  index,
+  total,
+}: {
+  item: (typeof TIMELINE)[0];
+  index: number;
+  total: number;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: panelRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Image Animations: Subtler zoom + cleaner movement
+  const imgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.08, 1, 1.08]);
+  const imgOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
+
+  // Text Animations: Staggered offsets and opacity
+  const headerY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [30, 0, 0, -30]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  const yearY = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [50, 0, 0, -50]);
+  const yearOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.15, 0.15, 0]);
+
+  const titleY = useTransform(scrollYProgress, [0.05, 0.4, 0.6, 0.95], [40, 0, 0, -40]);
+  const titleOpacity = useTransform(scrollYProgress, [0.05, 0.35, 0.65, 0.95], [0, 1, 1, 0]);
+
+  const descY = useTransform(scrollYProgress, [0.1, 0.45, 0.55, 0.9], [30, 0, 0, -30]);
+  const descOpacity = useTransform(scrollYProgress, [0.1, 0.4, 0.6, 0.9], [0, 1, 1, 0]);
 
   return (
-    <div ref={ref} className="flex gap-6 md:gap-8">
-      {/* Left: Year + Line */}
-      <div className="flex flex-col items-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={isInView ? { scale: 1, opacity: 1 } : {}}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full border border-slate-200 bg-white flex items-center justify-center z-10 shadow-sm"
-        >
-          <div className="w-2 h-2 rounded-full bg-[#EC223D]" />
-        </motion.div>
-        {!isLast && (
+    <div
+      ref={panelRef}
+      className="relative h-screen w-full overflow-hidden bg-slate-950"
+    >
+      {/* ── Background Image ── */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        style={{ scale: imgScale, opacity: imgOpacity }}
+      >
+        <img
+          src={item.image}
+          alt={item.title}
+          className="h-full w-full object-cover brightness-[0.5] saturate-[1.1]"
+        />
+      </motion.div>
+
+      {/* ── Overlay Masks ── */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+
+      {/* ── Main Content ── */}
+      <div className="container relative z-20 mx-auto flex h-full items-center px-6 md:px-12 lg:px-24">
+        <div className="max-w-4xl w-full">
+          {/* Header Section */}
           <motion.div
-            initial={{ scaleY: 0 }}
-            animate={isInView ? { scaleY: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="w-[1px] flex-1 bg-slate-200 origin-top mt-2"
-          />
-        )}
+            className="flex items-center gap-6 mb-4"
+            style={{ y: headerY, opacity: headerOpacity }}
+          >
+            <div className="flex flex-col">
+              <span className="text-[#EC223D] font-mono text-xs font-bold tracking-[0.5em] uppercase mb-1">
+                Timeline
+              </span>
+              <span className="text-white text-3xl font-bold font-mono">
+                {item.index}
+              </span>
+            </div>
+            <div className="h-12 w-[1px] bg-white/20" />
+            <span className="text-white/60 text-sm font-medium uppercase tracking-[0.4em] max-w-[200px] leading-tight">
+              {item.pretitle}
+            </span>
+          </motion.div>
+
+          {/* Decorative Year (Moved back up and made more visible) */}
+          <motion.h3
+            className="text-white font-black text-[clamp(4rem,15vw,12rem)] leading-none tracking-tighter mb-[-1.5rem] md:mb-[-3rem] select-none"
+            style={{ y: yearY, opacity: yearOpacity }}
+          >
+            {item.year}
+          </motion.h3>
+
+          {/* Title Section */}
+          <motion.h2
+            className="text-white text-[clamp(2.5rem,7vw,6.5rem)] font-bold leading-[0.95] tracking-tighter mb-10"
+            style={{ y: titleY, opacity: titleOpacity }}
+          >
+            {item.title}
+          </motion.h2>
+
+          {/* Description Section */}
+          <motion.div
+            className="flex gap-10 items-start"
+            style={{ y: descY, opacity: descOpacity }}
+          >
+            <div className="w-1.5 h-20 bg-[#EC223D] shrink-0 mt-2 shadow-[0_0_15px_rgba(236,34,61,0.5)]" />
+            <p className="text-white/70 text-lg md:text-2xl leading-relaxed max-w-2xl font-light tracking-wide">
+              {item.description}
+            </p>
+          </motion.div>
+        </div>
       </div>
 
-      {/* Right: Content */}
-      <motion.div
-        initial={{ opacity: 0, x: 10 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className={`pb-12 md:pb-16 ${isLast ? 'pb-0' : ''}`}
-      >
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#EC223D]">
-          {item.year}
+      {/* ── High-Tech Lateral Progress ── */}
+      <div className="absolute right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-6">
+        <div className="flex flex-col gap-3">
+          {TIMELINE.map((_, i) => (
+            <div
+              key={i}
+              className="group relative flex items-center justify-center"
+            >
+              <div
+                className={`w-1 transition-all duration-700 ease-out rounded-full ${
+                  index === i
+                    ? "h-16 bg-[#EC223D]" : "h-4 bg-white/10 group-hover:bg-white/30"
+                }`}
+              />
+              {index === i && (
+                <motion.div
+                  layoutId="active-glow"
+                  className="absolute -inset-2 bg-[#EC223D]/20 blur-md rounded-full -z-10"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <span className="text-white/20 text-[10px] font-bold uppercase tracking-[0.3em] [writing-mode:vertical-lr] rotate-180">
+          Progresso
         </span>
-        <h3 className="text-xl md:text-2xl font-bold text-slate-950 mt-1 mb-3 tracking-normal">
-          {item.title}
-        </h3>
-        <p className="text-slate-600 leading-relaxed font-medium text-sm md:text-base max-w-lg">
-          {item.description}
-        </p>
-      </motion.div>
+      </div>
+
+      {/* ── Minimal Scroll Indicator ── */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3">
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-px h-16 bg-gradient-to-b from-[#EC223D] to-transparent"
+        />
+        <span className="text-white/30 text-[9px] font-bold uppercase tracking-[0.8em] ml-[0.8em]">
+          Scroll
+        </span>
+      </div>
     </div>
   );
 }
 
+// ── Componente Principal ───────────────────────────────────────────────────
 export function LegacyTimeline() {
   return (
-    <section className="py-16 md:py-28 bg-white overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-20 items-start">
-
-          {/* Esquerda: Título */}
-          <div className="lg:sticky lg:top-32 h-fit">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#EC223D]">
-                Histórico & Solidez
-              </span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-normal text-slate-950 mt-4 leading-tight">
-                Nossa Trajetória.
-              </h2>
-              <p className="mt-6 text-slate-600 font-medium leading-relaxed max-w-sm">
-                Uma década de especialização no transporte de veículos pesados. 
-                Construímos um legado baseado em segurança e integridade patrimonial.
-              </p>
-
-              <div className="mt-12 p-8 bg-slate-950 rounded-2xl border border-white/5 shadow-2xl">
-                <div className="text-4xl md:text-5xl font-bold text-white leading-none">12+</div>
-                <div className="text-white/80 font-bold uppercase tracking-widest text-[10px] mt-3">Anos de Especialização</div>
-                <div className="text-white/40 text-xs font-medium mt-2 leading-relaxed">
-                  Tradição aliada ao rigor operacional para frotas corporativas.
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Direita: Timeline */}
-          <div className="pt-4">
-            {TIMELINE.map((item, index) => (
-              <TimelineItem
-                key={item.year}
-                item={item}
-                index={index}
-                isLast={index === TIMELINE.length - 1}
-              />
-            ))}
-          </div>
-
-        </div>
-      </div>
+    <section className="bg-slate-950">
+      {/* ── Painéis ── */}
+      {TIMELINE.map((item, i) => (
+        <ParallaxPanel
+          key={i}
+          item={item}
+          index={i}
+          total={TIMELINE.length}
+        />
+      ))}
     </section>
   );
 }

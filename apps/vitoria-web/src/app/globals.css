@@ -44,6 +44,27 @@ body {
   overflow-x: hidden;
 }
 
+/* ── Scrollbar Personalizada (Expert UX) ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1727;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #EC223D, #c41c33);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #EC223D #0B1727;
+}
+
 /* Utilitários de Scroll */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -55,11 +76,11 @@ body {
   }
 }
 
+/* Headings — NÃO definimos color aqui para não conflitar com Tailwind */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), sans-serif;
-  color: var(--foreground);
-  font-weight: 700; /* font-bold */
-  letter-spacing: 0; /* tracking-normal */
+  font-weight: 700;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
@@ -71,3 +92,4 @@ h1, h2, h3, h4, h5, h6 {
 .animate-marquee-scroll {
   animation: marquee-scroll 30s linear infinite;
 }
+

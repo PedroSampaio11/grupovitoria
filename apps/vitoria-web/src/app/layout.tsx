@@ -17,6 +17,7 @@ const jakarta = Plus_Jakarta_Sans({
 import { siteConfig } from "@/constants/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
@@ -30,6 +31,20 @@ export const metadata: Metadata = {
     },
   ],
   creator: "Vitória Transportes",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -45,12 +60,14 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/logos/icon.png",
+    shortcut: "/logos/icon.png",
+    apple: "/logos/icon.png",
   },
 };
+
 import { JsonLdSchema } from "@/components/shared/json-ld";
+import { FloatingContact } from "@/components/shared/floating-contact";
 
 export default function RootLayout({
   children,
@@ -60,11 +77,13 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${outfit.variable} ${jakarta.variable} h-full antialiased max-w-[100vw] overflow-x-hidden`}
+      suppressHydrationWarning
+      className={`${outfit.variable} ${jakarta.variable} h-full antialiased max-w-[100vw] overflow-x-clip`}
     >
-      <body className="min-h-full flex flex-col max-w-[100vw] overflow-x-hidden">
+      <body className="min-h-full flex flex-col max-w-[100vw] overflow-x-clip">
         <JsonLdSchema />
         {children}
+        <FloatingContact />
       </body>
     </html>
   );

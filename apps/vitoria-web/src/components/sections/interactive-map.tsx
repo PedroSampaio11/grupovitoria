@@ -52,7 +52,7 @@ export function InteractiveMap() {
               <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#EC223D]">
                 Malha Logística Real
               </span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-normal text-white mt-3 leading-tight">
+              <h2 className="text-4xl md:text-6xl font-bold tracking-normal !text-white mt-3 leading-tight">
                 Em todos os<br />27 Estados.
               </h2>
               <p className="mt-6 text-white/30 max-w-sm font-medium leading-relaxed">
