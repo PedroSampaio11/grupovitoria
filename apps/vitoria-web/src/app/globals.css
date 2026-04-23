@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* ============================================
+   VITÓRIA TRANSPORTES — DESIGN SYSTEM TOKENS
+   Regra: 60% Fundação | 30% Navy | 10% Red
+   ============================================ */
+:root {
+  /* Fundação */
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --surface: #F8FAFC;
+
+  /* Paleta de Marca */
+  --primary: #EC223D;        /* Vermelho Performance - CTA */
+  --navy: #0B1727;           /* Azul Marinho - Autoridade */
+  --body-text: #334155;      /* Cinza Chumbo - Leitura */
+
+  /* Tipografia */
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
+  --color-navy: var(--navy);
+  --color-body-text: var(--body-text);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--background);
+  color: var(--body-text);
+  font-family: var(--font-body), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Utilitários de Scroll */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+  color: var(--foreground);
+  font-weight: 700; /* font-bold */
+  letter-spacing: 0; /* tracking-normal */
+  text-wrap: balance;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-scroll {
+  animation: marquee-scroll 30s linear infinite;
+}
