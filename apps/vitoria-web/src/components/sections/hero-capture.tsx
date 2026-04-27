@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, Variants, AnimatePresence } from 'framer-motion';
-import { ArrowRight, MapPin, ShieldCheck, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { 
+  ArrowRight01Icon, 
+  Location01Icon, 
+  SecurityCheckIcon, 
+  Loading01Icon,
+  UserIcon,
+  WhatsappIcon
+} from '@hugeicons/core-free-icons';
 import { siteConfig } from '@/constants/site';
 
 const KEYWORDS = ["COM EXCELÊNCIA.", "COM SEGURANÇA.", "COM PARCERIA."];
@@ -17,10 +25,10 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
-function buildWhatsAppUrl(origem: string, destino: string, veiculo: string) {
+function buildWhatsAppUrl(origem: string, destino: string, veiculo: string, nome?: string) {
   const phone = siteConfig.links.whatsapp.replace("https://wa.me/", "");
   const msg = encodeURIComponent(
-    `Olá! Gostaria de uma cotação para transporte especializado:\n\n` +
+    `Olá! Me chamo ${nome || "um interessado"} e gostaria de uma cotação para transporte especializado:\n\n` +
     `📍 Origem: ${origem || "Não informado"}\n` +
     `📍 Destino: ${destino || "Não informado"}\n` +
     `🚐 Veículo: ${veiculo || "Não informado"}\n\n` +
@@ -136,7 +144,7 @@ function SmartLocationInput({
 
   return (
     <div className="relative" ref={containerRef}>
-      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+      <HugeiconsIcon icon={Location01Icon} className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
       <input
         id={id}
         type="text"
@@ -170,7 +178,7 @@ function SmartLocationInput({
 
       {isLoading && (
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          <Loader2 className="w-4 h-4 text-[#EC223D] animate-spin" />
+          <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 text-[#EC223D] animate-spin" />
         </div>
       )}
       {(isGeoDetected || wasResolved) && !isLoading && !showSuggestions && (
@@ -193,10 +201,13 @@ function SmartLocationInput({
 }
 
 export function HeroCapture() {
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [origem, setOrigem] = useState("");
   const [destino, setDestino] = useState("");
   const [veiculo, setVeiculo] = useState("");
   const [isGeoDetected, setIsGeoDetected] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [currentWord, setCurrentWord] = useState(0);
 
   useEffect(() => {
@@ -237,10 +248,50 @@ export function HeroCapture() {
     fetchGeo();
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const url = buildWhatsAppUrl(origem, destino, veiculo);
-    window.open(url, "_blank");
+    if (status === "submitting") return;
+    
+    setStatus("submitting");
+
+    try {
+      const response = await fetch("https://formspree.io/f/xrerwgzg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          nome,
+          whatsapp: telefone,
+          origem,
+          destino,
+          veiculo,
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        
+        // Limpar o formulário após sucesso
+        setNome("");
+        setTelefone("");
+        setOrigem("");
+        setDestino("");
+        setVeiculo("");
+
+        // Resetar o status após um delay
+        setTimeout(() => setStatus("idle"), 4000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      console.error("Form error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   }
 
   return (
@@ -338,6 +389,32 @@ export function HeroCapture() {
             </div>
 
             <div className="px-8 py-8 md:px-10 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <HugeiconsIcon icon={UserIcon} className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    type="text"
+                    name="nome"
+                    required
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    placeholder="Seu Nome"
+                    className="w-full h-12 md:h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none transition-all text-sm"
+                  />
+                </div>
+                <div className="relative">
+                  <HugeiconsIcon icon={WhatsappIcon} className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    type="tel"
+                    name="whatsapp"
+                    required
+                    value={telefone}
+                    onChange={(e) => setTelefone(e.target.value)}
+                    placeholder="WhatsApp"
+                    className="w-full h-12 md:h-14 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:ring-1 focus:ring-[#EC223D] focus:border-transparent outline-none transition-all text-sm"
+                  />
+                </div>
+              </div>
               <SmartLocationInput
                 id="campo-origem"
                 value={origem}
@@ -357,9 +434,10 @@ export function HeroCapture() {
               />
 
               <div className="relative">
-                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <HugeiconsIcon icon={SecurityCheckIcon} className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <select
                   id="campo-veiculo"
+                  name="veiculo"
                   required
                   value={veiculo}
                   onChange={(e) => setVeiculo(e.target.value)}
@@ -376,10 +454,26 @@ export function HeroCapture() {
 
               <button
                 type="submit"
-                className="w-full h-12 md:h-14 bg-[#EC223D] hover:bg-[#c41c33] text-white font-bold uppercase tracking-[0.15em] text-[11px] md:text-xs rounded-xl flex items-center justify-center gap-3 transition-all hover:shadow-lg hover:shadow-[#EC223D]/20 mt-2"
+                disabled={status === "submitting"}
+                className={`
+                  w-full h-12 md:h-14 text-white font-bold uppercase tracking-[0.15em] text-[11px] md:text-xs rounded-xl flex items-center justify-center gap-3 transition-all mt-2 group
+                  ${status === "submitting" ? "bg-slate-700 cursor-wait" : 
+                    status === "success" ? "bg-emerald-600" : 
+                    status === "error" ? "bg-amber-600" : "bg-[#EC223D] hover:bg-[#c41c33] hover:shadow-lg hover:shadow-[#EC223D]/20"}
+                `}
               >
-                Solicitar Viabilidade
-                <ArrowRight className="w-4 h-4" />
+                {status === "submitting" ? (
+                  <>Processando... <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 animate-spin" /></>
+                ) : status === "success" ? (
+                  "Enviado com Sucesso!"
+                ) : status === "error" ? (
+                  "Erro ao enviar. Tente novamente."
+                ) : (
+                  <>
+                    Enviar Solicitação
+                    <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
             </div>
 

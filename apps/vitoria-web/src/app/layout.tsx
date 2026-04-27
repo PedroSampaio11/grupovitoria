@@ -68,6 +68,7 @@ export const metadata: Metadata = {
 
 import { JsonLdSchema } from "@/components/shared/json-ld";
 import { FloatingContact } from "@/components/shared/floating-contact";
+import { CookieBanner } from "@/components/shared/cookie-banner";
 
 export default function RootLayout({
   children,
@@ -84,6 +85,7 @@ export default function RootLayout({
         <JsonLdSchema />
         {children}
         <FloatingContact />
+        <CookieBanner />
       </body>
     </html>
   );

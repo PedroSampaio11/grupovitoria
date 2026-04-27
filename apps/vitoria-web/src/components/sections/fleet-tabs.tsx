@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Truck, Bus, ShieldCheck } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Bus01Icon, SecurityCheckIcon, DeliveryTruck01Icon } from '@hugeicons/core-free-icons';
 
 const FLEET = [
   {
@@ -17,7 +18,7 @@ const FLEET = [
       { label: "SLA", value: "Excelência B2B" },
     ],
     bgGradient: "from-slate-800 to-slate-900",
-    icon: <Bus className="w-16 h-16" />,
+    icon: <HugeiconsIcon icon={Bus01Icon} size={64} />,
   },
   {
     id: "especiais",
@@ -31,7 +32,7 @@ const FLEET = [
       { label: "Metodologia", value: "Rigor Técnica" },
     ],
     bgGradient: "from-slate-900 to-black",
-    icon: <ShieldCheck className="w-16 h-16" />,
+    icon: <HugeiconsIcon icon={SecurityCheckIcon} size={64} />,
   },
   {
     id: "pesados",
@@ -45,7 +46,7 @@ const FLEET = [
       { label: "Status", value: "Operação Elite" },
     ],
     bgGradient: "from-slate-800 to-slate-950",
-    icon: <Truck className="w-16 h-16" />,
+    icon: <HugeiconsIcon icon={DeliveryTruck01Icon} size={64} />,
   },
 ];
 

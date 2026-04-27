@@ -17,7 +17,7 @@ const TIMELINE = [
     title: "Fundação e Tradição",
     description:
       "Nascemos com um propósito claro: redefinir a integridade no transporte. Desde o primeiro quilômetro, a segurança patrimonial tornou-se nossa assinatura irrevogável.",
-    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
+    image: "https://plus.unsplash.com/premium_photo-1661963986760-6e0213e25927?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Rodovia executiva
   },
   {
     year: "2005",
@@ -26,7 +26,7 @@ const TIMELINE = [
     title: "Consolidação Nacional",
     description:
       "A Vitória rompe fronteiras. Ampliamos nossa malha logística para conectar grandes indústrias aos quatro cantos do Brasil, mantendo o padrão de elite em cada entrega.",
-    image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=2075&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1496055401924-5e7fdc885742?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Caminhão em estrada cênica
   },
   {
     year: "2015",
@@ -35,7 +35,7 @@ const TIMELINE = [
     title: "Liderança em Frotas",
     description:
       "Verticalizamos nossa expertise para veículos transformados. Ambulâncias e viaturas de alta complexidade passam a contar com protocolos exclusivos de segurança Vitória.",
-    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1506015391300-4802dc74de2e?q=80&w=2070&auto=format&fit=crop", // Van em movimento
   },
   {
     year: "2020",
@@ -44,7 +44,7 @@ const TIMELINE = [
     title: "Excelência Operacional",
     description:
       "Implementamos vistorias de 47 pontos e inteligência logística avançada. Nossa performance atinge o ápice, garantindo 100% de proteção ao patrimônio corporativo.",
-    image: "https://images.unsplash.com/photo-1586864387789-628af9feed72?q=80&w=2070&auto=format&fit=crop",
+    image: "/banners/rodovia.jpg", // Imagem específica solicitada
   },
   {
     year: "Hoje",
@@ -53,7 +53,7 @@ const TIMELINE = [
     title: "Referência B2B Absoluta",
     description:
       "Três décadas de liderança técnica. Hoje, a Vitória Transportes é o braço direito do mercado corporativo, operando com estrutura de elite e processos certificados.",
-    image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop", // Visão moderna de transporte
   },
 ];
 
@@ -193,14 +193,14 @@ function ParallaxPanel({
         </span>
       </div>
 
-      {/* ── Minimal Scroll Indicator ── */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3">
+      {/* ── Minimal Scroll Indicator (Subtler) ── */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 opacity-40">
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-px h-16 bg-gradient-to-b from-[#EC223D] to-transparent"
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-[1px] h-10 bg-gradient-to-b from-white/40 to-transparent"
         />
-        <span className="text-white/30 text-[9px] font-bold uppercase tracking-[0.8em] ml-[0.8em]">
+        <span className="text-white/40 text-[8px] font-medium uppercase tracking-[0.4em] ml-[0.4em]">
           Scroll
         </span>
       </div>

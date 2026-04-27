@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowRight01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
@@ -51,13 +52,14 @@ export function Navbar() {
             : "bg-transparent"
         )}
       >
-        <div className="w-full max-w-7xl mx-auto px-6 py-4 md:py-5 flex items-center justify-between overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto px-6 py-4 md:py-5 flex items-center justify-between">
           <div className="flex flex-col shrink-0">
             <Image 
               src={isScrolled ? "/logos/logo-light.png" : "/logos/logo-dark.png"}
               alt="Vitória Transportes"
               width={200}
               height={200}
+              priority
               className="h-16 w-auto md:h-20 object-contain transition-all duration-300"
             />
           </div>
@@ -79,14 +81,14 @@ export function Navbar() {
 
           <div className="flex items-center gap-3 md:gap-4 shrink-0">
             <button className="hidden sm:flex items-center gap-2 px-6 h-11 md:h-12 bg-[#EC223D] text-white text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] rounded-full hover:bg-[#c41c33] transition-all">
-              Cotação <ArrowRight className="w-3.5 h-3.5" />
+              Cotação <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className={cn("p-2 z-[110] lg:hidden", isScrolled || menuOpen ? "text-white" : "text-slate-950")}
               aria-label="Menu"
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? <HugeiconsIcon icon={Cancel01Icon} size={24} /> : <HugeiconsIcon icon={Menu01Icon} size={24} />}
             </button>
           </div>
         </div>

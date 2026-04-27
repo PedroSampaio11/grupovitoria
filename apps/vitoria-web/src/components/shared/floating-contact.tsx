@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Mail, Phone, X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { WhatsappIcon, Mail01Icon, CallIcon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { siteConfig } from '@/constants/site';
 
 export function FloatingContact() {
@@ -25,7 +26,9 @@ export function FloatingContact() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
             >
-              <div className="bg-green-100 p-2 rounded-lg text-green-600 group-hover:scale-110 transition-transform"><MessageCircle size={20} /></div>
+              <div className="bg-green-100 p-2 rounded-lg text-green-600 group-hover:scale-110 transition-transform">
+                <HugeiconsIcon icon={WhatsappIcon} size={20} />
+              </div>
               <span className="text-sm font-bold text-slate-700">WhatsApp</span>
             </a>
             
@@ -33,17 +36,21 @@ export function FloatingContact() {
               href={`mailto:${siteConfig.contact.email}`} 
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
             >
-              <div className="bg-blue-100 p-2 rounded-lg text-blue-600 group-hover:scale-110 transition-transform"><Mail size={20} /></div>
+              <div className="bg-blue-100 p-2 rounded-lg text-blue-600 group-hover:scale-110 transition-transform">
+                <HugeiconsIcon icon={Mail01Icon} size={20} />
+              </div>
               <span className="text-sm font-bold text-slate-700">E-mail</span>
             </a>
             
-            <a 
-              href={`tel:${siteConfig.contact.phone.replace(/[^0-9+]/g, '')}`} 
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
-            >
-              <div className="bg-slate-100 p-2 rounded-lg text-slate-600 group-hover:scale-110 transition-transform"><Phone size={20} /></div>
-              <span className="text-sm font-bold text-slate-700">Ligar agora</span>
-            </a>
+            <div className="flex items-center gap-3 p-3 rounded-xl opacity-50 cursor-not-allowed">
+              <div className="bg-slate-100 p-2 rounded-lg text-slate-400">
+                <HugeiconsIcon icon={CallIcon} size={20} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ligar agora</span>
+                <span className="text-[10px] text-[#EC223D] font-bold uppercase tracking-widest">Em breve</span>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -52,7 +59,7 @@ export function FloatingContact() {
         onClick={() => setIsOpen(!isOpen)}
         className="bg-[#EC223D] hover:bg-[#D11A33] text-white p-4 rounded-full shadow-[0_8px_30px_rgb(236,34,61,0.4)] transition-all duration-300 hover:scale-105 active:scale-95"
       >
-        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+        {isOpen ? <HugeiconsIcon icon={Cancel01Icon} size={28} /> : <HugeiconsIcon icon={WhatsappIcon} size={28} />}
       </button>
     </div>
   );

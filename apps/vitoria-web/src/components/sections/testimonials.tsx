@@ -3,7 +3,8 @@
 import React, { useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 
 const METRICS = [
   { value: "+12", label: "Anos de Operação", sub: "Tradição em veículos especiais" },
@@ -93,13 +94,13 @@ export function Testimonials() {
               onClick={scrollPrev}
               className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#EC223D] hover:border-[#EC223D] transition-colors"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} />
             </button>
             <button 
               onClick={scrollNext}
               className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#EC223D] hover:border-[#EC223D] transition-colors"
             >
-              <ChevronRight className="w-5 h-5" />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={20} />
             </button>
           </div>
 

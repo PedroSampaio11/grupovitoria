@@ -2,62 +2,164 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, MapPin, Calendar } from 'lucide-react';
+import Image from 'next/image';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { PlayIcon, Location01Icon, Calendar01Icon } from '@hugeicons/core-free-icons';
 
 const DELIVERIES = [
   {
     id: 1,
-    type: "photo" as const,
-    title: "Entrega de frota governamental — 8 Vans",
-    location: "São Paulo → Brasília",
-    date: "Mar 2025",
-    vehicle: "Vans",
-    placeholder: "bg-slate-200",
+    type: "video" as const,
+    title: "Operação Logística Integrada",
+    location: "São Paulo, SP",
+    date: "MAR 2024",
+    vehicle: "Operacional",
+    thumbnail: "/imagens/1.png",
+    videoUrl: "https://www.youtube.com/embed/iwggY1dWOP8",
   },
   {
     id: 2,
-    type: "photo" as const,
-    title: "Ambulância UTI Móvel — Integridade Total",
-    location: "Curitiba → Rio de Janeiro",
-    date: "Fev 2025",
-    vehicle: "Especiais",
-    placeholder: "bg-slate-300",
+    type: "image" as const,
+    title: "Transporte de Vans Executivas",
+    location: "Curitiba, PR",
+    date: "FEV 2024",
+    vehicle: "Vans",
+    thumbnail: "/imagens/2.jpeg",
   },
   {
     id: 3,
-    type: "video" as const,
-    title: "Processo de Fixação em Veículos Transformados",
-    location: "Hub São Paulo",
-    date: "Jan 2025",
-    vehicle: "Operacional",
-    placeholder: "bg-slate-400",
+    type: "image" as const,
+    title: "Remessa de Ambulâncias UTI",
+    location: "Rio de Janeiro, RJ",
+    date: "JAN 2024",
+    vehicle: "Especiais",
+    thumbnail: "/imagens/3.jpeg",
   },
   {
     id: 4,
-    type: "photo" as const,
-    title: "Frota de Logística — Veículos Pesados",
-    location: "Goiânia → Salvador",
-    date: "Dez 2024",
+    type: "image" as const,
+    title: "Distribuição de Frota Pesada",
+    location: "Belo Horizonte, MG",
+    date: "DEZ 2023",
     vehicle: "Pesados",
-    placeholder: "bg-slate-200",
+    thumbnail: "/imagens/4.jpeg",
   },
   {
     id: 5,
-    type: "photo" as const,
-    title: "Van de Transporte Executivo",
-    location: "Porto Alegre → Florianópolis",
-    date: "Nov 2024",
-    vehicle: "Vans",
-    placeholder: "bg-slate-300",
+    type: "image" as const,
+    title: "Logística de Veículos Transformados",
+    location: "Salvador, BA",
+    date: "NOV 2023",
+    vehicle: "Especiais",
+    thumbnail: "/imagens/5.jpeg",
   },
   {
     id: 6,
-    type: "video" as const,
-    title: "Embarque de Frotas Especiais",
-    location: "Hub Curitiba",
-    date: "Out 2024",
+    type: "image" as const,
+    title: "Entrega Técnica Especializada",
+    location: "Brasília, DF",
+    date: "OUT 2023",
     vehicle: "Operacional",
-    placeholder: "bg-slate-400",
+    thumbnail: "/imagens/6.jpeg",
+  },
+  {
+    id: 7,
+    type: "image" as const,
+    title: "Movimentação de Frota Corporativa",
+    location: "Porto Alegre, RS",
+    date: "SET 2023",
+    vehicle: "Pesados",
+    thumbnail: "/imagens/7.jpg",
+  },
+  {
+    id: 8,
+    type: "image" as const,
+    title: "Segurança em Transporte de Elite",
+    location: "Vitória, ES",
+    date: "AGO 2023",
+    vehicle: "Vans",
+    thumbnail: "/imagens/8.jpeg",
+  },
+  {
+    id: 9,
+    type: "image" as const,
+    title: "Transporte de Implementos Rodoviários",
+    location: "Joinville, SC",
+    date: "JUL 2023",
+    vehicle: "Pesados",
+    thumbnail: "/imagens/9.jpeg",
+  },
+  {
+    id: 10,
+    type: "image" as const,
+    title: "Logística de Blindados e Especiais",
+    location: "São Paulo, SP",
+    date: "JUN 2023",
+    vehicle: "Especiais",
+    thumbnail: "/imagens/10.jpeg",
+  },
+  {
+    id: 11,
+    type: "image" as const,
+    title: "Distribuição de Unidades Móveis",
+    location: "Campinas, SP",
+    date: "MAI 2023",
+    vehicle: "Operacional",
+    thumbnail: "/imagens/11.jpeg",
+  },
+  {
+    id: 12,
+    type: "image" as const,
+    title: "Remessa de Veículos de Emergência",
+    location: "Fortaleza, CE",
+    date: "ABR 2023",
+    vehicle: "Especiais",
+    thumbnail: "/imagens/12.jpeg",
+  },
+  {
+    id: 13,
+    type: "image" as const,
+    title: "Transporte de Micro-ônibus Executivos",
+    location: "Florianópolis, SC",
+    date: "MAR 2023",
+    vehicle: "Vans",
+    thumbnail: "/imagens/13.jpeg",
+  },
+  {
+    id: 14,
+    type: "image" as const,
+    title: "Operação de Frota Customizada",
+    location: "Manaus, AM",
+    date: "FEV 2023",
+    vehicle: "Operacional",
+    thumbnail: "/imagens/14.jpeg",
+  },
+  {
+    id: 15,
+    type: "image" as const,
+    title: "Logística de Maquinário Industrial",
+    location: "Recife, PE",
+    date: "JAN 2023",
+    vehicle: "Pesados",
+    thumbnail: "/imagens/15.jpeg",
+  },
+  {
+    id: 16,
+    type: "image" as const,
+    title: "Entrega de Unidades Operacionais",
+    location: "Goiânia, GO",
+    date: "DEZ 2022",
+    vehicle: "Operacional",
+    thumbnail: "/imagens/16.jpeg",
+  },
+  {
+    id: 17,
+    type: "image" as const,
+    title: "Transporte de Frota de Segurança",
+    location: "Belém, PA",
+    date: "NOV 2022",
+    vehicle: "Vans",
+    thumbnail: "/imagens/17.jpeg",
   },
 ];
 
@@ -95,7 +197,7 @@ export function DeliveriesGallery() {
             </p>
           </div>
 
-          {/* Filters - Touch Target Optimized */}
+          {/* Filters */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mb-2">
             {FILTERS.map(filter => (
               <button
@@ -132,12 +234,20 @@ export function DeliveriesGallery() {
                   ${i === 0 ? 'sm:col-span-2 sm:row-span-2 aspect-[4/3]' : 'aspect-square'}
                 `}
               >
-                <div className={`absolute inset-0 ${item.placeholder} transition-transform duration-700 group-hover:scale-105`} />
+                <div className="absolute inset-0 bg-slate-100 transition-transform duration-700 group-hover:scale-105">
+                  <Image 
+                    src={item.thumbnail} 
+                    alt={item.title}
+                    fill
+                    priority={i === 0}
+                    className="object-cover"
+                  />
+                </div>
 
                 {/* Video badge */}
                 {item.type === "video" && (
                   <div className="absolute top-4 right-4 z-20 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
-                    <Play className="w-4 h-4 text-[#EC223D] fill-[#EC223D] ml-0.5" />
+                    <HugeiconsIcon icon={PlayIcon} size={16} className="text-[#EC223D] ml-0.5" />
                   </div>
                 )}
 
@@ -149,10 +259,10 @@ export function DeliveriesGallery() {
                   <h3 className="text-white font-bold text-lg leading-tight mb-2 tracking-normal">{item.title}</h3>
                   <div className="flex items-center gap-4 text-white/60 text-[10px] font-bold uppercase tracking-wider">
                     <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3 h-3" /> {item.location}
+                      <HugeiconsIcon icon={Location01Icon} size={12} /> {item.location}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3 h-3" /> {item.date}
+                      <HugeiconsIcon icon={Calendar01Icon} size={12} /> {item.date}
                     </span>
                   </div>
                 </div>
@@ -179,7 +289,7 @@ export function DeliveriesGallery() {
             Documentação contínua de operações em campo.
           </p>
           <a
-            href="https://instagram.com/vitoriatransportes"
+            href="https://www.instagram.com/grupovitoria/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 h-12 bg-slate-950 text-white text-[10px] font-bold uppercase tracking-[0.15em] rounded-full hover:shadow-lg transition-all"
@@ -190,7 +300,7 @@ export function DeliveriesGallery() {
 
       </div>
 
-      {/* Lightbox - Simple & Professional */}
+      {/* Lightbox */}
       <AnimatePresence>
         {lightbox !== null && (
           <motion.div
@@ -218,7 +328,23 @@ export function DeliveriesGallery() {
                   onClick={(e) => e.stopPropagation()}
                   className="max-w-5xl w-full"
                 >
-                  <div className={`w-full aspect-video rounded-xl ${item.placeholder} border border-white/5 shadow-2xl`} />
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-900 border border-white/5 shadow-2xl">
+                    {item.type === "video" && item.videoUrl ? (
+                      <iframe
+                        src={item.videoUrl}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <Image 
+                        src={item.thumbnail} 
+                        alt={item.title}
+                        fill
+                        className="object-contain"
+                      />
+                    )}
+                  </div>
                   <div className="mt-8">
                     <h3 className="text-white text-2xl font-bold tracking-normal">{item.title}</h3>
                     <div className="flex items-center gap-6 text-white/40 text-[11px] font-bold uppercase tracking-widest mt-4">

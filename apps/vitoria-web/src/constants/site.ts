@@ -4,8 +4,8 @@ export const siteConfig = {
   url: "https://vitoriatransportes.com.br",
   ogImage: "https://vitoriatransportes.com.br/og.jpg",
   links: {
-    whatsapp: "https://wa.me/5500000000000",
-    instagram: "https://instagram.com/vitoriatransportes",
+    whatsapp: "https://wa.me/5511948338850",
+    instagram: "https://www.instagram.com/grupovitoria/",
   },
   keywords: [
     "transporte de vans",
@@ -23,8 +23,8 @@ export const siteConfig = {
   ],
   contact: {
     email: "contato@vitoriatransportes.com.br",
-    phone: "(00) 00000-0000",
-    address: "Endereço da Vitória Transportes, Cidade - UF",
+    phone: "+55 11 94833-8850",
+    address: "Rua Vitória Régia, 551 - Santo André, SP",
   }
 };
 
