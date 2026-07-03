@@ -1,3 +1,4 @@
+import { TopBar } from "@/components/shared/top-bar";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { HeroCapture } from "@/components/sections/hero-capture";
@@ -14,6 +15,7 @@ import { Testimonials } from "@/components/sections/testimonials";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
+      <TopBar />
       <Navbar />
       <main className="flex-grow">
         <HeroCapture />

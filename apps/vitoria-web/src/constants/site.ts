@@ -4,7 +4,7 @@ export const siteConfig = {
   url: "https://vitoriatransportes.com.br",
   ogImage: "https://vitoriatransportes.com.br/og.jpg",
   links: {
-    whatsapp: "https://wa.me/5511948338850",
+    whatsapp: "https://wa.me/5511947828197",
     instagram: "https://www.instagram.com/grupovitoria/",
   },
   keywords: [
@@ -22,8 +22,8 @@ export const siteConfig = {
     "logística veicular Brasil",
   ],
   contact: {
-    email: "contato@vitoriatransportes.com.br",
-    phone: "+55 11 94833-8850",
+    email: "vitoria_cafe@hotmail.com",
+    phone: "+55 11 94782-8197",
     address: "Rua Vitória Régia, 551 - Santo André, SP",
   }
 };

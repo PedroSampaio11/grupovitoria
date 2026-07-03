@@ -11,7 +11,7 @@ import {
   UserIcon,
   WhatsappIcon
 } from '@hugeicons/core-free-icons';
-import { siteConfig } from '@/constants/site';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 const KEYWORDS = ["COM EXCELÊNCIA.", "COM SEGURANÇA.", "COM PARCERIA."];
 
@@ -25,16 +25,15 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
-function buildWhatsAppUrl(origem: string, destino: string, veiculo: string, nome?: string) {
-  const phone = siteConfig.links.whatsapp.replace("https://wa.me/", "");
-  const msg = encodeURIComponent(
-    `Olá! Me chamo ${nome || "um interessado"} e gostaria de uma cotação para transporte especializado:\n\n` +
+function buildQuoteWhatsAppUrl(nome: string, telefone: string, origem: string, destino: string, veiculo: string) {
+  return buildWhatsAppLink(
+    `Olá! Me chamo ${nome} e gostaria de uma cotação para transporte especializado:\n\n` +
     `📍 Origem: ${origem || "Não informado"}\n` +
     `📍 Destino: ${destino || "Não informado"}\n` +
-    `🚐 Veículo: ${veiculo || "Não informado"}\n\n` +
+    `🚐 Veículo: ${veiculo || "Não informado"}\n` +
+    `📱 Contato: ${telefone}\n\n` +
     `Prezo pela segurança e integridade no transporte.`
   );
-  return `https://wa.me/${phone}?text=${msg}`;
 }
 
 const BRAZIL_CITIES = [
@@ -273,7 +272,9 @@ export function HeroCapture() {
 
       if (response.ok) {
         setStatus("success");
-        
+
+        window.open(buildQuoteWhatsAppUrl(nome, telefone, origem, destino, veiculo), "_blank");
+
         // Limpar o formulário após sucesso
         setNome("");
         setTelefone("");
@@ -298,7 +299,7 @@ export function HeroCapture() {
     <section
       id="hero"
       aria-label="Formulário de cotação de transporte"
-      className="relative min-h-screen flex items-center pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-white"
+      className="relative min-h-screen flex items-center pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-white"
     >
       <div
         className="absolute inset-0 z-0 opacity-[0.03]"

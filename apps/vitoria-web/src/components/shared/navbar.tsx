@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowRight01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 const NAV_LINKS = [
   { label: 'Serviços', href: '#servicos' },
@@ -46,7 +47,7 @@ export function Navbar() {
         animate={isHidden && !menuOpen ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
         className={cn(
-          "fixed top-0 inset-x-0 z-[100] transition-all duration-300",
+          "fixed top-9 md:top-10 inset-x-0 z-[100] transition-all duration-300",
           isScrolled
             ? "bg-slate-950/95 backdrop-blur-md border-b border-white/5 shadow-2xl"
             : "bg-transparent"
@@ -80,9 +81,14 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-4 shrink-0">
-            <button className="hidden sm:flex items-center gap-2 px-6 h-11 md:h-12 bg-[#EC223D] text-white text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] rounded-full hover:bg-[#c41c33] transition-all">
+            <a
+              href={buildWhatsAppLink("Olá! Gostaria de solicitar uma cotação de transporte com a Vitória Transportes.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-2 px-6 h-11 md:h-12 bg-[#EC223D] text-white text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] rounded-full hover:bg-[#c41c33] transition-all"
+            >
               Cotação <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
-            </button>
+            </a>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className={cn("p-2 z-[110] lg:hidden", isScrolled || menuOpen ? "text-white" : "text-slate-950")}
@@ -117,14 +123,17 @@ export function Navbar() {
               </motion.button>
             ))}
 
-            <motion.button
+            <motion.a
+              href={buildWhatsAppLink("Olá! Gostaria de solicitar uma cotação de transporte com a Vitória Transportes.")}
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mt-8 px-10 h-14 bg-[#EC223D] text-white font-bold uppercase tracking-[0.15em] text-[11px] rounded-full hover:bg-[#c41c33] transition-all"
+              className="mt-8 px-10 h-14 flex items-center justify-center bg-[#EC223D] text-white font-bold uppercase tracking-[0.15em] text-[11px] rounded-full hover:bg-[#c41c33] transition-all"
             >
               Solicitar Cotação
-            </motion.button>
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>

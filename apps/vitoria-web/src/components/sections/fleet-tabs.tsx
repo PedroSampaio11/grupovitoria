@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Bus01Icon, SecurityCheckIcon, DeliveryTruck01Icon } from '@hugeicons/core-free-icons';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 const FLEET = [
   {
@@ -139,9 +140,14 @@ export function FleetTabs() {
                 </div>
               </div>
 
-              <button className="w-full h-14 mt-10 bg-[#EC223D] hover:bg-[#c41c33] text-white font-bold uppercase tracking-[0.15em] text-[10px] md:text-xs rounded-xl transition-all hover:shadow-lg hover:shadow-[#EC223D]/20">
+              <a
+                href={buildWhatsAppLink(`Olá! Gostaria de consultar a disponibilidade de frota para "${active.label}" com a Vitória Transportes.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-14 mt-10 flex items-center justify-center bg-[#EC223D] hover:bg-[#c41c33] text-white font-bold uppercase tracking-[0.15em] text-[10px] md:text-xs rounded-xl transition-all hover:shadow-lg hover:shadow-[#EC223D]/20"
+              >
                 Consultar Disponibilidade de Frota
-              </button>
+              </a>
             </div>
           </motion.div>
         </AnimatePresence>

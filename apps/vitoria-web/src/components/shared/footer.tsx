@@ -11,6 +11,7 @@ import {
   ArrowRight01Icon
 } from '@hugeicons/core-free-icons';
 import { siteConfig } from '@/constants/site';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -30,7 +31,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 shrink-0 w-full lg:w-auto">
             <a
-              href={siteConfig.links.whatsapp}
+              href={buildWhatsAppLink("Olá! Gostaria de consultar a viabilidade de uma operação de transporte com a Vitória Transportes.")}
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 h-14 md:h-16 flex items-center justify-center bg-[#EC223D] text-white font-bold uppercase tracking-[0.15em] text-[11px] rounded-xl hover:bg-[#c41c33] transition-all hover:shadow-xl hover:shadow-[#EC223D]/20 gap-3 group"
@@ -69,9 +70,9 @@ export function Footer() {
               >
                 <HugeiconsIcon icon={InstagramIcon} size={18} />
               </a>
-              <a 
-                href={siteConfig.links.whatsapp} 
-                target="_blank" 
+              <a
+                href={buildWhatsAppLink()}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-[#EC223D] hover:border-[#EC223D]/50 transition-all"
               >

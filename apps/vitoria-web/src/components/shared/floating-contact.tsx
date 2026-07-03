@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { WhatsappIcon, Mail01Icon, CallIcon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { siteConfig } from '@/constants/site';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 export function FloatingContact() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,9 +21,9 @@ export function FloatingContact() {
             transition={{ duration: 0.2 }}
             className="mb-4 bg-white rounded-2xl shadow-2xl border border-slate-100 p-3 flex flex-col gap-2 min-w-[220px]"
           >
-            <a 
-              href={siteConfig.links.whatsapp} 
-              target="_blank" 
+            <a
+              href={buildWhatsAppLink()}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
             >

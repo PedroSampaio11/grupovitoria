@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { TopBar } from "@/components/shared/top-bar";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { motion } from 'framer-motion';
@@ -9,8 +10,9 @@ import { siteConfig } from '@/constants/site';
 export default function PrivacidadePage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
+      <TopBar />
       <Navbar />
-      <main className="flex-grow pt-32 pb-16 md:pt-40 md:pb-24">
+      <main className="flex-grow pt-40 pb-16 md:pt-48 md:pb-24">
         <div className="container mx-auto px-6 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
